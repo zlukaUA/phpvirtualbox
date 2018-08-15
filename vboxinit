@@ -79,16 +79,41 @@ su_command="su - ${VBOXWEB_USER} -s /bin/bash -c"
 case "$1" in
 
 	start)
-		start
+		if test -f "/run/vboxwebsrv.pid";
+         	 then
+          	  echo "vboxwebsrv is already running!";
+         	 else
+          	  /usr/bin/vboxwebsrv -b -P /run/vboxwebsrv.pid > /dev/null
+          	  echo "vboxwebsrv is running!";
+        	fi 
 		;;
 	stop)
-		stop
+		if test -f "/run/vboxwebsrv.pid";
+         	 then
+          	  /bin/kill -15 `cat /run/vboxwebsrv.pid`
+          	  rm /run/vboxwebsrv.pid
+          	  echo "vboxwebsrv is stopped!";
+         	 else
+          	  echo "vboxwebsrv is now not running!";
+        	fi
   		;;
 	status)
-		status
+		if test -f "/run/vboxwebsrv.pid";
+         	 then
+          	  echo "vboxwebsrv is running!";
+         	 else
+          	  echo "vboxwebsrv is not running!";
+        	 fi
 		;;
 	restart)
-		restart
+		if test -f "/run/vboxwebsrv.pid";
+        	 then
+          	  /bin/kill -15 `cat /run/vboxwebsrv.pid`
+          	  rm /run/vboxwebsrv.pid
+          	  echo "vboxwebsrv is stopped!";
+        	fi
+        	/usr/bin/vboxwebsrv -b -P /run/vboxwebsrv.pid > /dev/null
+        	echo "vboxwebsrv is running!"; 
 		;;
 	*)
 	    echo "Usage: $0 {start|stop|restart|status}"
